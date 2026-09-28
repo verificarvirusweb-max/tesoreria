@@ -1,12 +1,12 @@
 import os
 import re
 import json
-import psycopg2
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
+import psycopg2
 
 load_dotenv()
 
@@ -28,8 +28,8 @@ client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else genai.Clien
 def get_db_connection():
     if not DATABASE_URL:
         raise HTTPException(status_code=500, detail="DATABASE_URL no configurada")
-    # Pasa la URL directamente para permitir parametros de conexión como sslmode
-    return psycopg2.connect(DATABASE_URL)
+    # prepare_threshold=0 evita la preparación de sentencias incompatible con PgBouncer/Pooler de Supabase
+    return psycopg2.connect(DATABASE_URL, prepare_threshold=0)
 
 @app.get("/")
 def home():
@@ -87,7 +87,7 @@ async def escanear_sinpe(file: UploadFile = File(...)):
         )
         
         response = client.models.generate_content(
-            model='gemini-3.6-flash',
+            model='gemini-2.5-flash',
             contents=[image_part, prompt]
         )
         
