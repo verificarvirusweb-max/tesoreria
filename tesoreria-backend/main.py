@@ -1,7 +1,6 @@
 import os
 import re
 import json
-import urllib.parse
 import psycopg2
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -29,8 +28,8 @@ client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else genai.Clien
 def get_db_connection():
     if not DATABASE_URL:
         raise HTTPException(status_code=500, detail="DATABASE_URL no configurada")
-    decoded_url = urllib.parse.unquote(DATABASE_URL)
-    return psycopg2.connect(decoded_url)
+    # Pasa la URL directamente para permitir parametros de conexión como sslmode
+    return psycopg2.connect(DATABASE_URL)
 
 @app.get("/")
 def home():
