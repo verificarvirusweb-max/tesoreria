@@ -26,16 +26,11 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else genai.Client()
 
 def get_db_connection():
-    if not DATABASE_URL:
+ if not DATABASE_URL:
         raise HTTPException(status_code=500, detail="DATABASE_URL no configurada")
     
-    # 1. Se realiza la conexión estándar
+    # Simplemente realiza la conexión directa sin modificar atributos inexistentes
     conn = psycopg2.connect(DATABASE_URL)
-    
-    # 2. Se asigna prepare_threshold sobre el objeto de conexión
-    # Esto deshabilita las sentencias preparadas para PgBouncer/Pooler de Supabase
-    conn.prepare_threshold = 0
-    
     return conn
 
 @app.get("/")
