@@ -26,10 +26,8 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else genai.Client()
 
 def get_db_connection():
- if not DATABASE_URL:
+    if not DATABASE_URL:
         raise HTTPException(status_code=500, detail="DATABASE_URL no configurada")
-    
-    # Simplemente realiza la conexión directa sin modificar atributos inexistentes
     conn = psycopg2.connect(DATABASE_URL)
     return conn
 
